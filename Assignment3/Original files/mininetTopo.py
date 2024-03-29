@@ -46,7 +46,6 @@ class TreeTopo(Topo):
             sconfig = {'dpid': "%016x" % x}
             self.addSwitch('s%d' % x, **sconfig)
         
-        print("switches have been created")
         # Add hosts
         for y in range(1, int(host) + 1):
             ip = '10.0.0.%d/8' % y
@@ -64,10 +63,8 @@ class TreeTopo(Topo):
 
     # the function to add links 
     def add_links(self):
-         for i in range(0, len(self.links), 3):
-            node1 = self.links[i]
-            node2 = self.links[i + 1]
-            bw = self.links[i + 2]
+         for i in range(0, len(self.links)):
+            node1, node2, bw = self.links[i].split(",")
             self.addLink(node1, node2, bw=int(bw))
 
             print("the links have been created")
