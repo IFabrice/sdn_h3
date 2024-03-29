@@ -23,9 +23,10 @@ class TreeTopo(Topo):
 		# Initialize topology
             Topo.__init__(self)
             self.linksInfo = []
+            self.links_dict = dict()
 
-            self.build()
-            self.add_links()
+            # self.build()
+            # self.add_links()
     
     def getContents(self, contents):
         hosts = contents[0]
@@ -68,6 +69,7 @@ class TreeTopo(Topo):
          for i in range(0, len(self.linksInfo)):
             node1, node2, bw = self.linksInfo[i].split(",")
             self.addLink(node1, node2, bw=int(bw))
+            self.links_dict[node1][node2] = int(bw)
 
 	# You can write other functions as you need.
 
@@ -103,7 +105,8 @@ def assignQueues(topo):
         node_2 = info['node2']
         print("we have the following nodes %s and node %s" % (node_1, node_2))
         # get the bandwidth between two nodes 
-        bw = topo.linksInfo[node_1][node_2]
+        bw = topo.links_dict[node_1][node_2]
+        # bw = topo.linksInfo[node_1][node_2]
         bw = bw * 10^6
         print('%s@Port%i is connected with bandwith of %i to %s@Port%i' %(node_1, port_1, bw, node_2, port_2))
         create_queues(bw, node_1, port_1)
