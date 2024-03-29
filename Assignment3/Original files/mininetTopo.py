@@ -19,6 +19,10 @@ class TreeTopo(Topo):
     def __init__(self):
 		# Initialize topology
             Topo.__init__(self)
+            self.links = []
+
+            self.build()
+            self.add_links()
     
     def getContents(self, contents):
         hosts = contents[0]
@@ -32,28 +36,41 @@ class TreeTopo(Topo):
         f = open(sys.argv[1],"r")
         contents = f.read().split()
         host, switch, link, linksInfo = self.getContents(contents)
+        self.links = linksInfo
         print("Hosts: " + host)
         print("switch: " + switch)
         print("links: " + link)
         print("linksInfo: " + str(linksInfo))
         # Add switch
         for x in range(1, int(switch) + 1):
-	        sconfig = {'dpid': "%016x" % x}
-	        self.addSwitch('s%d' % x, **sconfig)
+            sconfig = {'dpid': "%016x" % x}
+            self.addSwitch('s%d' % x, **sconfig)
+        
+        print("switches have been created")
         # Add hosts
         for y in range(1, int(host) + 1):
-	        ip = '10.0.0.%d/8' % y
-	        self.addHost('h%d' % y, ip=ip)
+            ip = '10.0.0.%d/8' % y
+            self.addHost('h%d' % y, ip=ip)
 
-    # Add Links
+        # Add Links
         for x in range(int(link)):
-	        info = linksInfo[x].split(',')
-	        host = info[0]
-	        switch = info[1]
-	        bandwidth = int(info[2])
-	        self.addLink(host, switch, bw=bandwidth)
-            
+            info = linksInfo[x].split(',')
+            host = info[0]
+            switch = info[1]
+            bandwidth = int(info[2])
+            self.addLink(host, switch, bw=bandwidth)
+             
 
+
+    # the function to add links 
+    def add_links(self):
+         for i in range(0, len(self.links), 3):
+            node1 = self.links[i]
+            node2 = self.links[i + 1]
+            bw = self.links[i + 2]
+            self.addLink(node1, node2, bw=int(bw))
+
+            print("the links have been created")
 	
 	# You can write other functions as you need.
 
