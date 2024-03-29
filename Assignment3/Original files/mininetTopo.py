@@ -67,7 +67,6 @@ class TreeTopo(Topo):
             node1, node2, bw = self.links[i].split(",")
             self.addLink(node1, node2, bw=int(bw))
 
-            print("the links have been created")
 	
 	# You can write other functions as you need.
 
