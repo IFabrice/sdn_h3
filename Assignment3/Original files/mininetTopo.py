@@ -19,7 +19,7 @@ class TreeTopo(Topo):
     def __init__(self):
 		# Initialize topology
             Topo.__init__(self)
-            self.links = []
+            self.linksInfo = []
 
             self.build()
             self.add_links()
@@ -36,7 +36,7 @@ class TreeTopo(Topo):
         f = open(sys.argv[1],"r")
         contents = f.read().split()
         host, switch, link, linksInfo = self.getContents(contents)
-        self.links = linksInfo
+        self.linksInfo = linksInfo
         print("Hosts: " + host)
         print("switch: " + switch)
         print("links: " + link)
@@ -63,8 +63,8 @@ class TreeTopo(Topo):
 
     # the function to add links 
     def add_links(self):
-         for i in range(0, len(self.links)):
-            node1, node2, bw = self.links[i].split(",")
+         for i in range(0, len(self.linksInfo)):
+            node1, node2, bw = self.linksInfo[i].split(",")
             self.addLink(node1, node2, bw=int(bw))
 
 	
@@ -86,12 +86,16 @@ def startNetwork():
     controllerIP = sys.argv[2]
 
     global net
-    net = Mininet(topo=topo, link = TCLink,
+    net = Mininet(topo=topo, 
+                  link = TCLink,
                   controller=lambda name: RemoteController(name, ip=controllerIP),
-                  listenPort=6633, autoSetMacs=True)
+                  listenPort=6633, 
+                  autoSetMacs=True)
 
     info('** Starting the network\n')
     net.start()
+
+
 
     # Create QoS Queues
     # > os.system('sudo ovs-vsctl -- set Port [INTERFACE] qos=@newqos \
