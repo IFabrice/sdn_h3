@@ -6,7 +6,6 @@ Please add your matric number: F598DF
 import os
 import sys
 import atexit
-import psutil
 from mininet.net import Mininet
 from mininet.log import setLogLevel, info
 from mininet.cli import CLI
@@ -128,7 +127,7 @@ def startNetwork():
 
     # create qos queues for each link
     assignQueues(topo)
-    
+
     info('** Running CLI\n')
     CLI(net)
 
