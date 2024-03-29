@@ -1,6 +1,6 @@
 '''
-Please add your name:
-Please add your matric number: 
+Please add your name: Fabrice Ingabire
+Please add your matric number: F598DF
 '''
 
 import sys
@@ -125,7 +125,6 @@ class Controller(EventMixin):
         
         forward()
 
-
     def _handle_ConnectionUp(self, event):
         dpid = dpid_to_str(event.dpid)
         log.debug("Switch %s has come up.", dpid)
@@ -158,32 +157,32 @@ class Controller(EventMixin):
 
         # configure queues in the switch
 
-        def queue_configuration():
+        # def queue_configuration():
 
-            # configure default queue
-            config_default_msg = of.ofp_queue_prop_min_rate_experimenter()
-            config_default_msg.properties.append(of.ofp_queue_prop_max_rate_experimenter())
-            config_default_msg.properties[0].rate = self.default_bw
+        #     # configure default queue
+        #     config_default_msg = of.ofp_queue_prop_min_rate_experimenter()
+        #     config_default_msg.properties.append(of.ofp_queue_prop_max_rate_experimenter())
+        #     config_default_msg.properties[0].rate = self.default_bw
 
-            msg = of.ofp_queue_mod()
-            msg.queue_id = self.default_queue_id
-            msg.properties.append(config_default_msg)
+        #     msg = of.ofp_queue_mod()
+        #     msg.queue_id = self.default_queue_id
+        #     msg.properties.append(config_default_msg)
 
-            event.connection.send(msg)
+        #     event.connection.send(msg)
 
-            # configure priority queue
-            config_priority_msg = of.ofp_queue_prop_min_rate_experimenter()
-            config_priority_msg.properties.append(of.ofp_queue_prop_max_rate_experimenter())
-            config_priority_msg.properties[0].rate = self.premium_bw
+        #     # configure priority queue
+        #     config_priority_msg = of.ofp_queue_prop_min_rate_experimenter()
+        #     config_priority_msg.properties.append(of.ofp_queue_prop_max_rate_experimenter())
+        #     config_priority_msg.properties[0].rate = self.premium_bw
         
 
-            prem_msg = of.ofp_queue_mod()
-            prem_msg.queue_id = self.priority_queue_id
-            prem_msg.properties.append(config_priority_msg)
+        #     prem_msg = of.ofp_queue_mod()
+        #     prem_msg.queue_id = self.priority_queue_id
+        #     prem_msg.properties.append(config_priority_msg)
 
-            event.connection.send(prem_msg)
+        #     event.connection.send(prem_msg)
         
-        queue_configuration()
+        # queue_configuration()
 
 
  

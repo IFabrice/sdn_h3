@@ -1,17 +1,21 @@
 '''
-Please add your name:
-Please add your matric number: 
+Please add your name: Fabrice Ingabire
+Please add your matric number: F598DF
 '''
 
 import os
 import sys
 import atexit
+import psutil
 from mininet.net import Mininet
 from mininet.log import setLogLevel, info
 from mininet.cli import CLI
 from mininet.topo import Topo
 from mininet.link import TCLink
 from mininet.node import RemoteController
+
+X = .8
+Y = .5
 
 net = None
 
@@ -60,14 +64,12 @@ class TreeTopo(Topo):
             self.addLink(host, switch, bw=bandwidth)
              
 
-
     # the function to add links 
     def add_links(self):
          for i in range(0, len(self.linksInfo)):
             node1, node2, bw = self.linksInfo[i].split(",")
             self.addLink(node1, node2, bw=int(bw))
 
-	
 	# You can write other functions as you need.
 
 	# Add hosts
@@ -79,6 +81,35 @@ class TreeTopo(Topo):
 
 	# Add links
 	# > self.addLink([HOST1], [HOST2])
+
+# function to create QoS Queues 
+def create_queues(bw, switch, port):
+
+    eth = '%s-eth%s' % (switch, port)
+
+    os.system('sudo ovs-vsctl -- set Port %s qos=@newqos \
+               -- --id=@newqos create QoS type=linux-htb other-config:max-rate=%i queues=0=@q0,1=@q1,2=@q2 \
+               -- --id=@q0 create queue other-config:max-rate=%i other-config:min-rate=%i \
+               -- --id=@q1 create queue other-config:min-rate=%i \
+               -- --id=@q2 create queue other-config:max-rate=%i'(eth, bw, bw, bw, X * bw, Y * bw))
+    
+def assignQueues(topo):
+    for link in topo.links(sort=True, withKeys=False, withInfo=True):
+        # get link stats
+        host, switch, info = link
+        port_1 = info['port1']
+        port_2 = info['port2']
+
+        node_1 = info['node1']
+        node_2 = info['node2']
+
+        # get the bandwidth between two nodes 
+        bw = topo.linksInfo[node_1][node_2]
+        bw = bw * 10^6
+        print('%s@Port%i is connected with bandwith of %i to %s@Port%i' %(node_1, port_1, bw, node_2, port_2))
+        create_queues(bw, node_1, port_1)
+        create_queues(bw, node_2, port_2)
+    
 
 def startNetwork():
     info('** Creating the tree network\n')
@@ -95,15 +126,9 @@ def startNetwork():
     info('** Starting the network\n')
     net.start()
 
-
-
-    # Create QoS Queues
-    # > os.system('sudo ovs-vsctl -- set Port [INTERFACE] qos=@newqos \
-    #            -- --id=@newqos create QoS type=linux-htb other-config:max-rate=[LINK SPEED] queues=0=@q0,1=@q1,2=@q2 \
-    #            -- --id=@q0 create queue other-config:max-rate=[LINK SPEED] other-config:min-rate=[LINK SPEED] \
-    #            -- --id=@q1 create queue other-config:min-rate=[X] \
-    #            -- --id=@q2 create queue other-config:max-rate=[Y]')
-
+    # create qos queues for each link
+    assignQueues(topo)
+    
     info('** Running CLI\n')
     CLI(net)
 
@@ -113,7 +138,6 @@ def stopNetwork():
         # Remove QoS and Queues
         os.system('sudo ovs-vsctl --all destroy Qos')
         os.system('sudo ovs-vsctl --all destroy Queue')
-
 
 
 if __name__ == '__main__':
