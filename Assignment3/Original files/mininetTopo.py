@@ -99,7 +99,8 @@ def create_queues(bw, switch, port):
                -- --id=@newqos create QoS type=linux-htb other-config:max-rate=%i queues=0=@q0,1=@q1,2=@q2 \
                -- --id=@q0 create queue other-config:max-rate=%i other-config:min-rate=%i \
                -- --id=@q1 create queue other-config:min-rate=%i \
-               -- --id=@q2 create queue other-config:max-rate=%i'(eth, bw, bw, bw, X * bw, Y * bw))
+               -- --id=@q2 create queue other-config:max-rate=%i' %(eth, bw, bw, bw, X * bw, Y * bw))
+
     
 def assignQueues(topo):
     for link in topo.links(sort=True, withKeys=False, withInfo=True):
