@@ -103,7 +103,6 @@ def assignQueues(topo):
 
         node_1 = info['node1']
         node_2 = info['node2']
-        print("we have the following nodes %s and node %s" % (node_1, node_2))
         # get the bandwidth between two nodes 
         bw = topo.links_dict[node_1][node_2]
         # bw = topo.linksInfo[node_1][node_2]

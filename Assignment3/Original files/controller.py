@@ -31,7 +31,7 @@ class Controller(EventMixin):
         self.premium_bw = 800000
         self.default_bw = 500000
         self.priority_queue_id = 1
-        self.default_queue_id = 0
+        self.default_queue_id = 2
 
         # get policies from the file
         
@@ -105,7 +105,7 @@ class Controller(EventMixin):
             # set the queue id (q_id) accordingly if the dstip is in premium list
             q_id = self.default_queue_id
             if dstip in self.premium_ip:
-                q_id = self.premium_ip
+                q_id = self.priority_queue_id
             
             install_enqueue(event, packet, outport, q_id)
 
@@ -155,34 +155,6 @@ class Controller(EventMixin):
         for i in self.fw_policies:
             sendFirewallPolicy(event.connection, i)
 
-        # configure queues in the switch
-
-        # def queue_configuration():
-
-        #     # configure default queue
-        #     config_default_msg = of.ofp_queue_prop_min_rate_experimenter()
-        #     config_default_msg.properties.append(of.ofp_queue_prop_max_rate_experimenter())
-        #     config_default_msg.properties[0].rate = self.default_bw
-
-        #     msg = of.ofp_queue_mod()
-        #     msg.queue_id = self.default_queue_id
-        #     msg.properties.append(config_default_msg)
-
-        #     event.connection.send(msg)
-
-        #     # configure priority queue
-        #     config_priority_msg = of.ofp_queue_prop_min_rate_experimenter()
-        #     config_priority_msg.properties.append(of.ofp_queue_prop_max_rate_experimenter())
-        #     config_priority_msg.properties[0].rate = self.premium_bw
-        
-
-        #     prem_msg = of.ofp_queue_mod()
-        #     prem_msg.queue_id = self.priority_queue_id
-        #     prem_msg.properties.append(config_priority_msg)
-
-        #     event.connection.send(prem_msg)
-        
-        # queue_configuration()
 
 
  
