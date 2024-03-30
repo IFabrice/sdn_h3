@@ -69,6 +69,11 @@ class TreeTopo(Topo):
          for i in range(0, len(self.linksInfo)):
             node1, node2, bw = self.linksInfo[i].split(",")
             self.addLink(node1, node2, bw=int(bw))
+            if node1 not in self.links_dict:
+                self.links_dict[node1] = {}
+            if node2 not in self.links_dict:
+                self.links_dict[node2] = {}
+
             self.links_dict[node1][node2] = int(bw)
             self.links_dict[node2][node1] = int(bw)
 
