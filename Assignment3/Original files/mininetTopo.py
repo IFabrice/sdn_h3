@@ -21,12 +21,12 @@ net = None
 class TreeTopo(Topo):		
     def __init__(self):
 		# Initialize topology
-            Topo.__init__(self)
-            self.linksInfo = []
-            self.links_dict = {}
+        Topo.__init__(self)
+        self.linksInfo = []
+        self.links_dict = {}
 
-            # self.build()
-            # self.add_links()
+        self.build()
+        self.add_links()
     
     def getContents(self, contents):
         hosts = contents[0]
@@ -73,6 +73,7 @@ class TreeTopo(Topo):
                 self.links_dict[node1] = {}
             if node2 not in self.links_dict:
                 self.links_dict[node2] = {}
+            
 
             self.links_dict[node1][node2] = int(bw)
             self.links_dict[node2][node1] = int(bw)
